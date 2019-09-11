@@ -1,0 +1,29 @@
+---
+kibana_version: "7.3.1"
+
+kibana_package_name: kibana
+#kibana_package_state: present
+kibana_allow_downgrades: false
+kibana_start_service: true
+# set to true to use the role to check if kibana has started successful
+kibana_status_check: false
+kibana_config_template: kibana.yml.j2
+kibana_config_file_path: /etc/kibana/kibana.yml
+kibana_path_data: "/var/lib/kibana"
+kibana_enable_pid_file: false
+
+kibana_server_port: 5601
+kibana_server_host: "0.0.0.0"
+
+kibana_elasticsearch_url: "http://localhost:9200"
+kibana_elasticsearch_username: "elasticsearch"
+kibana_elasticsearch_password: "elasticsearch"
+kibana_server_basepath: ""
+
+kibana_xpack_apm_enabled: true
+kibana_xpack_apm_ui_enabled: true
+# The default locale. This locale can be used in certain circumstances to substitute any missing
+# translations.
+kibana_i18n_locale: "en"
+
+kibana_config: {}

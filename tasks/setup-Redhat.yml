@@ -1,0 +1,27 @@
+---
+- name: set fact allow_downgrade to no
+  set_fact: allow_downgrade=no
+
+- name: set fact allow_downgrade to yes
+  set_fact: allow_downgrade=yes
+  when: kibana_allow_downgrades
+
+- name: Add Elasticsearch GPG key.
+  rpm_key:
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Kibana repository.
+  template:
+    src: kibana.repo.j2
+    dest: /etc/yum.repos.d/kibana.repo
+    mode: 0644
+
+- name: RedHat - Install Kibana
+  become: yes
+  yum:
+    name: '{{ kibana_package_name }}{% if kibana_version is defined  %}-{{ kibana_version }}{% endif %}'
+    state: present
+    update_cache: yes
+    allow_downgrade: '{{ allow_downgrade }}'
+  notify: restart kibana

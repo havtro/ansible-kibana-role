@@ -1,0 +1,43 @@
+---
+- name: Set major version
+  set_fact: "kibana_major_version={{ kibana_version.split('.')[0] }}.x"
+  when:
+      - kibana_major_version is undefined
+
+- include: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: setup-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure Kibana is started and enabled at boot.
+  become: yes
+  service: name=kibana state=started enabled=yes
+  when: kibana_start_service
+
+- name: Copy Kibana configuration.
+  template:
+    src: "{{ kibana_config_template }}"
+    dest: "{{ kibana_config_file_path }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart kibana
+
+- name: Wait for kibana to start listening
+  wait_for:
+    port: "{{ kibana_server_port }}"
+    delay: 5
+
+- name: Check if kibana has started succesfully
+  uri:
+    url: http://{{ inventory_hostname }}:{{ kibana_server_port }}/api/status
+    return_content: yes
+    body_format: json
+    status_code: 200
+    method: GET
+  register: http_status
+  failed_when: http_status.json.status == "GR"
+  when: kibana_status_check
+  retries: 30
+  delay: 5
