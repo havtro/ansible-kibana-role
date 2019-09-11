@@ -1,0 +1,15 @@
+name: kibana role test
+on: push
+runs on: ubuntu-latest  
+jobs:
+  molecule:
+    steps: 
+      - name: Run molecule test centos7
+        uses: ./.github/actions/molecule-action
+        env:
+          MOLECULE_DISTRO=centos7
+      - name: Run molecule test ubuntu
+        uses: ./.github/actions/molecule-action
+        env:
+          MOLECULE_DISTRO=ubuntu1804
+    
