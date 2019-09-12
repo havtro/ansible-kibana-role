@@ -1,9 +1,9 @@
 ---
 - name: set fact allow_downgrade to no
-  set_fact: allow_downgrade=no
+  set_fact: allow_downgrade="no"
 
 - name: set fact allow_downgrade to yes
-  set_fact: allow_downgrade=yes
+  set_fact: allow_downgrade="yes"
   when: kibana_allow_downgrades
 
 - name: Add Elasticsearch GPG key.

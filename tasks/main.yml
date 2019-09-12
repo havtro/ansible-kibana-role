@@ -16,6 +16,7 @@
   when: kibana_start_service
 
 - name: Copy Kibana configuration.
+  become: yes
   template:
     src: "{{ kibana_config_template }}"
     dest: "{{ kibana_config_file_path }}"
@@ -23,6 +24,8 @@
     group: root
     mode: 0644
   notify: restart kibana
+  tags:
+    - configuration
 
 - name: Wait for kibana to start listening
   wait_for:
@@ -37,7 +40,9 @@
     status_code: 200
     method: GET
   register: http_status
-  failed_when: http_status.json.status == "GR"
+  failed_when: http_status.json.status.overall.state != "green"
   when: kibana_status_check
   retries: 30
   delay: 5
+  tags:
+    - status

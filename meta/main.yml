@@ -6,6 +6,7 @@ dependencies: []
 
 galaxy_info:
   author: havtro
+  role_name: kibana
   description: Kibana on linux
   # company: your company (optional)
 
